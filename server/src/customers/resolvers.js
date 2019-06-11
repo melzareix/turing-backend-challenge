@@ -1,12 +1,12 @@
 import * as yup from 'yup';
-import { Customers } from './customer';
+import { Customers, JWT } from './customer';
 
 /*
   Validate the given schema.
 */
 const validateSchema = async (schema, args, errors) => {
   try {
-    schema.validate(args);
+    await schema.validate(args);
   } catch (error) {
     if (error.name === 'ValidationError') {
       let newError;
@@ -39,9 +39,22 @@ const customerSignupSchema = yup.object().shape({
 
 const resolvers = {
   Mutation: {
-    customerSignup: async (parent, args, { errors }) => {
-      await validateSchema(customerSignupSchema, args, errors);
-      return null;
+    customerSignup: async (parent, { name, email, password }, { errors }) => {
+      await validateSchema(
+        customerSignupSchema,
+        { name, email, password },
+        errors
+      );
+      let customer;
+      try {
+        customer = await Customers.createCustomer({ name, email, password });
+      } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY') {
+          throw new Error(errors.email_exists.name);
+        }
+      }
+      const { accessToken, expiresIn } = JWT.sign(customer);
+      return { customer, accessToken, expires_in: expiresIn };
     }
   }
 };

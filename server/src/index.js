@@ -1,5 +1,8 @@
-import { ApolloServer } from 'apollo-server';
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
 import pino from 'pino';
+import passport from 'passport';
+import passportJWT from 'passport-jwt';
 import departments from './departments';
 import customers from './customers';
 import errors from './errors';
@@ -11,7 +14,15 @@ const logger = pino({
 
 require('dotenv').config();
 
+// Express
+const app = express();
+passport.initialize();
+
 // GraphQL Server
+app.use('/graphql', (req, res, next) => {
+  return next();
+});
+
 const server = new ApolloServer({
   typeDefs: [departments.typeDefs, customers.typeDefs],
   resolvers: [departments.resolvers, customers.resolvers],
@@ -27,4 +38,7 @@ const server = new ApolloServer({
   })
 });
 
-server.listen().then(({ url }) => logger.info(`Server started at ${url}`));
+server.applyMiddleware({ app });
+app.listen({ port: 4000 }, () => {
+  logger.info(`Server started at http://localhost:4000${server.graphqlPath}`);
+});
