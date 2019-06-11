@@ -1,0 +1,31 @@
+type Customer {
+  customer_id: ID!
+  name: String!
+  email: String!
+  address_1: String
+  address_2: String
+  city: String
+  region: String
+  postal_code: String
+  country: String
+  shipping_region_id: Int!
+  day_phone: String
+  eve_phone: String
+  mob_phone: String
+  credit_card: String
+}
+
+type LoginToken {
+  customer: Customer!
+  accessToken: String!
+  expires_in: String!
+}
+
+# type query {
+#   getCustomer(): Customer
+# }
+
+type Mutation {
+  customerLogin(email: String!, password: String!): LoginToken!
+  customerSignup(name: String!, email: String!, password: String!): LoginToken!
+}
