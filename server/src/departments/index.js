@@ -1,6 +1,5 @@
-import 'graphql-import-node';
 import resolvers from './resolvers';
-import typeDefs from './typeDef.graphql';
+import typeDefs from './typeDef';
 
 export default {
   resolvers,
