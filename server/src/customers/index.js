@@ -1,6 +1,5 @@
-import 'graphql-import-node';
 import resolvers from './resolvers';
-import typeDefs from './typeDef.graphql';
+import typeDefs from './typeDef';
 import errors from '../errors';
 import { Customers } from './customer';
 

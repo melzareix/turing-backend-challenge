@@ -85,8 +85,9 @@ export class Customers {
    */
 
   static async createCustomer(data) {
-    data.password = await bcrypt.hash(data.password, bcrypt.genSaltSync(8));
-    const customer = await new CustomerModel(data).save();
+    const newData = Object.assign({}, data);
+    newData.password = await bcrypt.hash(data.password, bcrypt.genSaltSync(8));
+    const customer = await new CustomerModel(newData).save();
     return customer;
   }
 
