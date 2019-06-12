@@ -1308,6 +1308,13 @@ caniuse-lite@^1.0.30000974:
   version "1.0.30000974"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000974.tgz#b7afe14ee004e97ce6dc73e3f878290a12928ad8"
 
+card-validator@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/card-validator/-/card-validator-6.2.0.tgz#59037c6480df5786473cab720f165ba868560e0b"
+  integrity sha512-1vYv45JaE9NmixZr4dl6ykzbFKv7imI9L7MQDs235b/a7EGbG8rrEsipeHtVvscLSUbl3RX6UP5gyOe0Y2FlHA==
+  dependencies:
+    credit-card-type "^8.0.0"
+
 chalk@2.4.2, chalk@^2.0.0, chalk@^2.1.0, chalk@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-2.4.2.tgz#cd42541677a54333cf541a49108c1432b44c9424"
@@ -1456,6 +1463,11 @@ cors@^2.8.4:
 create-error@~0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/create-error/-/create-error-0.3.1.tgz#69810245a629e654432bf04377360003a5351a23"
+
+credit-card-type@^8.0.0:
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/credit-card-type/-/credit-card-type-8.2.0.tgz#507a43b257f0f3b8bd4d4b339a419741fc7e6236"
+  integrity sha512-+1kZKW717eDTbZ1/EjkEi4+UrD2SygU2Iujn/VlrMHXloGW/y5GqPlQ/KgT4gaoDmWyufBfm/CAzNkpeccfMtA==
 
 cross-spawn@^6.0.5:
   version "6.0.5"

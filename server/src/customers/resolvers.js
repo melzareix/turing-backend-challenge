@@ -1,53 +1,25 @@
-import * as yup from 'yup';
-import { Customers, JWT } from './customer';
-
-/*
-  Validate the given schema.
-*/
-const validateSchema = async (schema, args, errors) => {
-  try {
-    await schema.validate(args);
-  } catch (error) {
-    if (error.name === 'ValidationError') {
-      let newError;
-      if (error.type === 'required') {
-        newError = errors.required;
-      } else if (error.path === 'email') {
-        newError = errors.email_invalid;
-      } else if (error.path === 'password') {
-        newError = errors.password_invalid;
-      } else {
-        newError = errors.default;
-        newError.message = error.message;
-      }
-      throw new Error(newError.name);
-    }
-  }
-};
-
-/**
- * Input Schemas.
- */
-const customerSignupSchema = yup.object().shape({
-  name: yup.string().required(),
-  email: yup
-    .string()
-    .email()
-    .required(),
-  password: yup.string().required()
-});
-
-const customerLoginSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email()
-    .required(),
-  password: yup.string().required()
-});
+import { Customers } from './customer';
+import validateSchema from '../utils/yupValidator';
+import {
+  customerSignupSchema,
+  customerLoginSchema,
+  customerUpdateSchema,
+  customerAddressUpdateSchema,
+  customerCreditCardUpdateSchema
+} from './schemas';
 
 const resolvers = {
+  Query: {
+    getCustomer: async (parent, args, { errors, req }) => {
+      if (!req.user) {
+        throw new Error(errors.unauthorized.name);
+      }
+      const customer = await Customers.findWithId(req.user.id);
+      return customer.attributes;
+    }
+  },
   Mutation: {
-    customerSignup: async (parent, { name, email, password }, { errors }) => {
+    signupCustomer: async (parent, { name, email, password }, { errors }) => {
       await validateSchema(
         customerSignupSchema,
         { name, email, password },
@@ -68,22 +40,74 @@ const resolvers = {
         expires_in: expiresIn
       };
     },
-    customerLogin: async (parent, { email, password }, { errors }) => {
+    loginCustomer: async (parent, { email, password }, { errors }) => {
       await validateSchema(customerLoginSchema, { email, password }, errors);
       const customer = await Customers.loginCustomer({ email, password });
       if (customer === null) {
         throw new Error(errors.email_not_exist.name);
+      } else if (customer === -1) {
+        throw new Error(errors.invalid_email_password.name);
       }
-      const { accessToken, expiresIn } = JWT.sign({
-        name: customer.name,
-        id: customer.customer_id,
-        email
-      });
+      const { accessToken, expiresIn } = customer.generateToken();
       return {
-        customer,
+        customer: customer.attributes,
         accessToken,
         expires_in: expiresIn
       };
+    },
+    updateCustomer: async (parent, { customerData }, { req, errors }) => {
+      if (!req.user) {
+        throw new Error(errors.unauthorized.name);
+      }
+
+      await validateSchema(customerUpdateSchema, customerData, errors);
+      let updatedCustomer;
+
+      try {
+        updatedCustomer = await Customers.updateCustomer(
+          customerData,
+          req.user
+        );
+      } catch (error) {
+        if (error.code === 'ER_DUP_ENTRY') {
+          throw new Error(errors.email_exists.name);
+        }
+        throw error;
+      }
+
+      return updatedCustomer.attributes;
+    },
+    updateCustomerAddress: async (parent, { addressData }, { req, errors }) => {
+      if (!req.user) {
+        throw new Error(errors.unauthorized.name);
+      }
+
+      await validateSchema(customerAddressUpdateSchema, addressData, errors);
+      const updatedCustomer = await Customers.updateCustomer(
+        addressData,
+        req.user
+      );
+      return updatedCustomer.attributes;
+    },
+    updateCustomerCreditCard: async (
+      parent,
+      { creditCard },
+      { req, errors }
+    ) => {
+      if (!req.user) {
+        throw new Error(errors.unauthorized.name);
+      }
+
+      await validateSchema(
+        customerCreditCardUpdateSchema,
+        { creditCard },
+        errors
+      );
+      const updatedCustomer = await Customers.updateCustomer(
+        { credit_card: creditCard },
+        req.user
+      );
+      return updatedCustomer.attributes;
     }
   }
 };

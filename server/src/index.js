@@ -2,7 +2,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import pino from 'pino';
 import passport from 'passport';
-import passportJWT from 'passport-jwt';
+import jwtStrategy from './utils/jwtPassport';
 import departments from './departments';
 import customers from './customers';
 import errors from './errors';
@@ -16,20 +16,33 @@ require('dotenv').config();
 
 // Express
 const app = express();
+
+passport.use(jwtStrategy);
 passport.initialize();
 
 // GraphQL Server
 app.use('/graphql', (req, res, next) => {
-  return next();
+  passport.authenticate('jwt', { session: false }, (err, user) => {
+    if (user) {
+      req.user = {
+        customer_id: user.attributes.customer_id,
+        email: user.attributes.email
+      };
+    }
+    next();
+  })(req, res, next);
 });
 
 const server = new ApolloServer({
   typeDefs: [departments.typeDefs, customers.typeDefs],
   resolvers: [departments.resolvers, customers.resolvers],
   formatError: e => {
-    const err = errors[e.message];
-    if (err) return err;
-    return e;
+    if (!errors[e.message]) return e;
+    const err = Object.assign({}, errors[e.message]);
+
+    delete err.name;
+    err.field = e.extensions.exception.field;
+    return err;
   },
   context: req => ({
     ...req,

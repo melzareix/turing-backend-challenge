@@ -28,5 +28,33 @@ export default {
     status: 400,
     code: 'USR_05',
     message: "The email doesn't exist"
+  },
+  invalid_phone: {
+    name: 'invalid_phone',
+    status: 400,
+    code: 'USR_06',
+    message: 'This is an invalid phone number.'
+  },
+  invalid_cc: {
+    name: 'invalid_cc',
+    status: 400,
+    code: 'USR_08',
+    message: 'This is an invalid Credit Card.'
+  },
+  invalid_email_password: {
+    name: 'invalid_email_password',
+    status: 400,
+    code: 'USR_10',
+    message: 'The email/password combination is invalid.'
+  },
+  unauthorized: {
+    name: 'unauthorized',
+    status: 401,
+    code: 'AUT_02',
+    message: 'Access Unauthorized'
+  },
+  default: {
+    name: 'default',
+    status: 400
   }
 };

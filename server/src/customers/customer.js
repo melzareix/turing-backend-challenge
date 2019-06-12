@@ -41,42 +41,58 @@ export const CustomerModel = orm.Model.extend({
 
 export class Customers {
   /**
-   * Return department with id.
+   * Return customer with email.
    */
 
-  static async findOne(email, password) {
+  static async findOne(email) {
     const result = await CustomerModel.query({
       where: {
-        email,
-        password
+        email
       }
     }).fetch();
-    if (result != null) {
-      return result.serialize();
-    }
+    return result;
+  }
+
+  /**
+   * Return customer with id.
+   */
+
+  static async findWithId(id) {
+    const result = await CustomerModel.query({
+      where: {
+        customer_id: id
+      }
+    }).fetch();
     return result;
   }
 
   /**
    * Create new customer.
    */
+
   static async createCustomer(data) {
     const customer = await new CustomerModel(data).save();
     return customer;
   }
 
+  /**
+   * Login Customer using email & password.
+   */
   static async loginCustomer({ email, password }) {
-    const result = await new CustomerModel()
-      .query({
-        where: {
-          email,
-          password
-        }
-      })
-      .fetch();
-    if (result != null) {
-      return result.serialize();
+    const result = await this.findOne(email);
+    if (result != null && result.attributes.password !== password) {
+      return -1;
     }
     return result;
+  }
+
+  /**
+   * Update custoemr data.
+   */
+
+  static async updateCustomer(data, user) {
+    let customer = await this.findWithId(user.customer_id);
+    customer = await customer.save(data);
+    return customer;
   }
 }
