@@ -15,14 +15,6 @@ export class Departments {
   }
 
   /**
-   * Return paginated departments.
-   */
-  static async findPage(page = 1) {
-    const results = await DepartmentModel.fetchPage({ page });
-    return results.serialize();
-  }
-
-  /**
    * Return department with id.
    */
   static async findOne(id) {
