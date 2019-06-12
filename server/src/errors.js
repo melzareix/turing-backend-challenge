@@ -47,6 +47,12 @@ export default {
     code: 'USR_10',
     message: 'The email/password combination is invalid.'
   },
+  user_exists: {
+    name: 'user_exists',
+    status: 400,
+    code: 'USR_11',
+    message: 'The user with this facebook account already exists.'
+  },
   unauthorized: {
     name: 'unauthorized',
     status: 401,

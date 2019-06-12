@@ -46,7 +46,7 @@ extend type Query {
 
 type Mutation {
   loginCustomer(email: String!, password: String!): LoginToken!
-  facebookLoginCustomer(token: String!): LoginToken!
+  facebookLoginCustomer(accessToken: String!): LoginToken!
   signupCustomer(name: String!, email: String!, password: String!): LoginToken!
 
   updateCustomer(customerData: CustomerDataInput!): Customer!

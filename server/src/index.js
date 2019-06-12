@@ -2,7 +2,7 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import pino from 'pino';
 import passport from 'passport';
-import jwtStrategy from './utils/jwtPassport';
+import { jwtStrategy, facebookStrategy } from './utils/passport';
 import departments from './departments';
 import customers from './customers';
 import errors from './errors';
@@ -18,6 +18,8 @@ require('dotenv').config();
 const app = express();
 
 passport.use(jwtStrategy);
+passport.use(facebookStrategy);
+
 passport.initialize();
 
 // GraphQL Server
@@ -44,8 +46,9 @@ const server = new ApolloServer({
     err.field = e.extensions.exception.field;
     return err;
   },
-  context: req => ({
-    ...req,
+  context: ({ req, res }) => ({
+    req,
+    res,
     db,
     errors
   })

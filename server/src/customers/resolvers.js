@@ -1,5 +1,7 @@
 import { Customers } from './customer';
 import validateSchema from '../utils/yupValidator';
+import { authenticateFacebook } from '../utils/passport';
+
 import {
   customerSignupSchema,
   customerLoginSchema,
@@ -53,6 +55,50 @@ const resolvers = {
         customer: customer.attributes,
         accessToken,
         expires_in: expiresIn
+      };
+    },
+    facebookLoginCustomer: async (
+      parent,
+      { accessToken },
+      { req, res, errors }
+    ) => {
+      req.body = {
+        ...req.body,
+        access_token: accessToken
+      };
+
+      const { data } = await authenticateFacebook(req, res);
+      const { profile } = data;
+      let customer;
+
+      customer = await Customers.findFacebookUser(profile.id);
+
+      if (!customer) {
+        // Create User If not exists
+        const newUser = {
+          name:
+            profile.displayName || `${profile.familyName} ${profile.givenName}`,
+          email: profile.emails[0].value,
+          password: Math.random()
+            .toString(36)
+            .slice(-8),
+          facebook_id: profile.id
+        };
+
+        try {
+          customer = await Customers.createCustomer(newUser);
+        } catch (error) {
+          if (error.code === 'ER_DUP_ENTRY') {
+            throw new Error(errors.user_exists.name);
+          }
+        }
+      }
+
+      const jwtToken = customer.generateToken();
+      return {
+        customer: customer.attributes,
+        accessToken: jwtToken.accessToken,
+        expires_in: jwtToken.expiresIn
       };
     },
     updateCustomer: async (parent, { customerData }, { req, errors }) => {

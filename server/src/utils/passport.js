@@ -2,8 +2,12 @@
  * Passport JWT Parsing & Extraction.
  */
 
+import passport from 'passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
+import FacebookTokenStrategy from 'passport-facebook-token';
 import customers from '../customers';
+
+require('dotenv').config();
 
 const parseHeader = hdrValue => {
   const re = /(\S+)\s+(\S+)/;
@@ -26,7 +30,7 @@ const extractTokenFromUserKeyHeader = request => {
   return token;
 };
 
-export default new Strategy(
+export const jwtStrategy = new Strategy(
   {
     secretOrKey: process.env.JWT_KEY,
     jwtFromRequest: ExtractJwt.fromExtractors([extractTokenFromUserKeyHeader])
@@ -36,3 +40,33 @@ export default new Strategy(
     return done(null, user);
   }
 );
+
+/*
+  Facebook Auth.
+*/
+
+export const facebookStrategy = new FacebookTokenStrategy(
+  {
+    clientID: process.env.FB_ID,
+    clientSecret: process.env.FB_SECRET
+  },
+  (accessToken, refreshToken, profile, done) => {
+    done(null, {
+      accessToken,
+      refreshToken,
+      profile
+    });
+  }
+);
+
+export const authenticateFacebook = (req, res) =>
+  new Promise((resolve, reject) => {
+    passport.authenticate(
+      'facebook-token',
+      { session: false },
+      (err, data, info) => {
+        if (err) reject(err);
+        resolve({ data, info });
+      }
+    )(req, res);
+  });

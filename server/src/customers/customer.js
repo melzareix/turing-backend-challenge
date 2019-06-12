@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import orm from '../utils/db';
 
 require('dotenv').config();
@@ -54,6 +55,19 @@ export class Customers {
   }
 
   /**
+   * Return customer with email.
+   */
+
+  static async findFacebookUser(id) {
+    const result = await CustomerModel.query({
+      where: {
+        facebook_id: id
+      }
+    }).fetch();
+    return result;
+  }
+
+  /**
    * Return customer with id.
    */
 
@@ -71,6 +85,7 @@ export class Customers {
    */
 
   static async createCustomer(data) {
+    data.password = await bcrypt.hash(data.password, bcrypt.genSaltSync(8));
     const customer = await new CustomerModel(data).save();
     return customer;
   }
@@ -80,7 +95,10 @@ export class Customers {
    */
   static async loginCustomer({ email, password }) {
     const result = await this.findOne(email);
-    if (result != null && result.attributes.password !== password) {
+    if (
+      result != null &&
+      bcrypt.compareSync(password, result.attributes.password)
+    ) {
       return -1;
     }
     return result;
