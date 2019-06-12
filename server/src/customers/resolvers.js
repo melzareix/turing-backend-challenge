@@ -37,6 +37,14 @@ const customerSignupSchema = yup.object().shape({
   password: yup.string().required()
 });
 
+const customerLoginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email()
+    .required(),
+  password: yup.string().required()
+});
+
 const resolvers = {
   Mutation: {
     customerSignup: async (parent, { name, email, password }, { errors }) => {
@@ -53,8 +61,29 @@ const resolvers = {
           throw new Error(errors.email_exists.name);
         }
       }
-      const { accessToken, expiresIn } = JWT.sign(customer);
-      return { customer, accessToken, expires_in: expiresIn };
+      const { accessToken, expiresIn } = customer.generateToken();
+      return {
+        customer: customer.attributes,
+        accessToken,
+        expires_in: expiresIn
+      };
+    },
+    customerLogin: async (parent, { email, password }, { errors }) => {
+      await validateSchema(customerLoginSchema, { email, password }, errors);
+      const customer = await Customers.loginCustomer({ email, password });
+      if (customer === null) {
+        throw new Error(errors.email_not_exist.name);
+      }
+      const { accessToken, expiresIn } = JWT.sign({
+        name: customer.name,
+        id: customer.customer_id,
+        email
+      });
+      return {
+        customer,
+        accessToken,
+        expires_in: expiresIn
+      };
     }
   }
 };

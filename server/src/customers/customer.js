@@ -3,10 +3,9 @@ import orm from '../utils/db';
 
 require('dotenv').config();
 
-export const CustomerModel = orm.Model.extend({
-  tableName: 'customer',
-  idAttribute: 'customer_id'
-});
+/**
+ * JWT Signing & Validation.
+ */
 
 export class JWT {
   static sign(data) {
@@ -24,10 +23,27 @@ export class JWT {
   }
 }
 
+/**
+ * Customer Model.
+ */
+
+export const CustomerModel = orm.Model.extend({
+  tableName: 'customer',
+  idAttribute: 'customer_id',
+  generateToken() {
+    const name = this.get('name');
+    const id = this.get('customer_id');
+    const email = this.get('email');
+
+    return JWT.sign({ name, id, email });
+  }
+});
+
 export class Customers {
   /**
    * Return department with id.
    */
+
   static async findOne(email, password) {
     const result = await CustomerModel.query({
       where: {
@@ -41,8 +57,26 @@ export class Customers {
     return result;
   }
 
+  /**
+   * Create new customer.
+   */
   static async createCustomer(data) {
     const customer = await new CustomerModel(data).save();
-    return customer.attributes;
+    return customer;
+  }
+
+  static async loginCustomer({ email, password }) {
+    const result = await new CustomerModel()
+      .query({
+        where: {
+          email,
+          password
+        }
+      })
+      .fetch();
+    if (result != null) {
+      return result.serialize();
+    }
+    return result;
   }
 }
