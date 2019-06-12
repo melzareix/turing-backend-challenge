@@ -97,7 +97,7 @@ export class Customers {
     const result = await this.findOne(email);
     if (
       result != null &&
-      bcrypt.compareSync(password, result.attributes.password)
+      !bcrypt.compareSync(password, result.attributes.password)
     ) {
       return -1;
     }

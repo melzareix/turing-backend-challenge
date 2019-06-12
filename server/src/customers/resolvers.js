@@ -10,6 +10,15 @@ import {
   customerCreditCardUpdateSchema
 } from './schemas';
 
+const generateLoginResponse = customer => {
+  const jwtToken = customer.generateToken();
+  return {
+    customer: customer.attributes,
+    accessToken: jwtToken.accessToken,
+    expires_in: jwtToken.expiresIn
+  };
+};
+
 const resolvers = {
   Query: {
     getCustomer: async (parent, args, { errors, req }) => {
@@ -35,12 +44,7 @@ const resolvers = {
           throw new Error(errors.email_exists.name);
         }
       }
-      const { accessToken, expiresIn } = customer.generateToken();
-      return {
-        customer: customer.attributes,
-        accessToken,
-        expires_in: expiresIn
-      };
+      return generateLoginResponse(customer);
     },
     loginCustomer: async (parent, { email, password }, { errors }) => {
       await validateSchema(customerLoginSchema, { email, password }, errors);
@@ -50,12 +54,7 @@ const resolvers = {
       } else if (customer === -1) {
         throw new Error(errors.invalid_email_password.name);
       }
-      const { accessToken, expiresIn } = customer.generateToken();
-      return {
-        customer: customer.attributes,
-        accessToken,
-        expires_in: expiresIn
-      };
+      return generateLoginResponse(customer);
     },
     facebookLoginCustomer: async (
       parent,
@@ -94,12 +93,7 @@ const resolvers = {
         }
       }
 
-      const jwtToken = customer.generateToken();
-      return {
-        customer: customer.attributes,
-        accessToken: jwtToken.accessToken,
-        expires_in: jwtToken.expiresIn
-      };
+      return generateLoginResponse(customer);
     },
     updateCustomer: async (parent, { customerData }, { req, errors }) => {
       if (!req.user) {
