@@ -10,6 +10,23 @@ export class ProductModel extends Model {
   static get idColumn() {
     return 'product_id';
   }
+
+  static get relationMappings() {
+    return {
+      categories: {
+        relation: Model.ManyToManyRelation,
+        modelClass: CategoryModel,
+        join: {
+          from: 'product.product_id',
+          through: {
+            from: 'product_category.product_id',
+            to: 'product_category.category_id'
+          },
+          to: 'category.category_id'
+        }
+      }
+    };
+  }
 }
 
 export class ReviewModel extends Model {
@@ -26,10 +43,7 @@ export class ReviewModel extends Model {
       customer: {
         relation: Model.HasOneRelation,
         modelClass: CustomerModel,
-        join: {
-          from: 'review.customer_id',
-          to: 'customer.customer_id'
-        }
+        join: { from: 'review.customer_id', to: 'customer.customer_id' }
       }
     };
   }

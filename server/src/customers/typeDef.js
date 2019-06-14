@@ -44,7 +44,7 @@ export default gql`
   }
 
   extend type Query {
-    getCustomer: Customer
+    customer: Customer
   }
 
   type Mutation {
