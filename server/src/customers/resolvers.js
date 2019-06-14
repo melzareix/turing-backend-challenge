@@ -21,7 +21,7 @@ const generateLoginResponse = customer => {
 
 const resolvers = {
   Query: {
-    getCustomer: async (parent, args, { errors, req }) => {
+    customer: async (parent, args, { errors, req }) => {
       if (!req.user) {
         throw new Error(errors.unauthorized.name);
       }

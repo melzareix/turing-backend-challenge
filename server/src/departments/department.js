@@ -1,4 +1,5 @@
 import { Model } from 'objection';
+import { CategoryModel } from '../categories/category';
 
 export class DepartmentModel extends Model {
   static get tableName() {
@@ -7,6 +8,19 @@ export class DepartmentModel extends Model {
 
   static get idColumn() {
     return 'department_id';
+  }
+
+  static get relationMappings() {
+    return {
+      categories: {
+        relation: Model.HasManyRelation,
+        modelClass: CategoryModel,
+        join: {
+          from: 'department.department_id',
+          to: 'category.department_id'
+        }
+      }
+    };
   }
 }
 

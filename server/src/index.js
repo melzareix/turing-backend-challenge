@@ -11,6 +11,9 @@ import customers from './customers';
 import attributes from './attributes';
 import tax from './tax';
 import products from './products';
+import categories from './categories';
+import shipping from './shipping';
+import stripe from './stripe';
 
 import errors from './errors';
 import knexConfig from './utils/db';
@@ -46,20 +49,33 @@ app.use('/graphql', (req, res, next) => {
   })(req, res, next);
 });
 
+// Stripe Webhook
+app.post('/stripe/webhook', (req, res) => {
+  const eventJson = JSON.parse(req.body);
+  logger.info(eventJson);
+  res.send(200);
+});
+
 const server = new ApolloServer({
   typeDefs: [
     departments.typeDefs,
     customers.typeDefs,
     attributes.typeDefs,
     tax.typeDefs,
-    products.typeDefs
+    products.typeDefs,
+    categories.typeDefs,
+    shipping.typeDefs,
+    stripe.typeDefs
   ],
   resolvers: [
     departments.resolvers,
     customers.resolvers,
     attributes.resolvers,
     tax.resolvers,
-    products.resolvers
+    products.resolvers,
+    categories.resolvers,
+    shipping.resolvers,
+    stripe.resolvers
   ],
   formatError: e => {
     if (!errors[e.message])
