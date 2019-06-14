@@ -14,6 +14,7 @@ import products from './products';
 import categories from './categories';
 import shipping from './shipping';
 import stripe from './stripe';
+import cart from './cart';
 
 import errors from './errors';
 import knexConfig from './utils/db';
@@ -65,7 +66,8 @@ const server = new ApolloServer({
     products.typeDefs,
     categories.typeDefs,
     shipping.typeDefs,
-    stripe.typeDefs
+    stripe.typeDefs,
+    cart.typeDefs
   ],
   resolvers: [
     departments.resolvers,
@@ -75,7 +77,8 @@ const server = new ApolloServer({
     products.resolvers,
     categories.resolvers,
     shipping.resolvers,
-    stripe.resolvers
+    stripe.resolvers,
+    cart.resolvers
   ],
   formatError: e => {
     if (!errors[e.message])
