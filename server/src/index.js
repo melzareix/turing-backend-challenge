@@ -2,11 +2,18 @@ import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import pino from 'pino';
 import passport from 'passport';
+import { Model } from 'objection';
+import Knex from 'knex';
 import { jwtStrategy, facebookStrategy } from './utils/passport';
+
 import departments from './departments';
 import customers from './customers';
+import attributes from './attributes';
+import tax from './tax';
+import products from './products';
+
 import errors from './errors';
-import db from './utils/db';
+import knexConfig from './utils/db';
 
 const logger = pino({
   prettyPrint: true
@@ -14,9 +21,13 @@ const logger = pino({
 
 require('dotenv').config();
 
+// Database
+Model.knex(Knex(knexConfig));
+
 // Express
 const app = express();
 
+// Passport
 passport.use(jwtStrategy);
 passport.use(facebookStrategy);
 
@@ -27,8 +38,8 @@ app.use('/graphql', (req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
     if (user) {
       req.user = {
-        customer_id: user.attributes.customer_id,
-        email: user.attributes.email
+        customer_id: user.customer_id,
+        email: user.email
       };
     }
     next();
@@ -36,10 +47,27 @@ app.use('/graphql', (req, res, next) => {
 });
 
 const server = new ApolloServer({
-  typeDefs: [departments.typeDefs, customers.typeDefs],
-  resolvers: [departments.resolvers, customers.resolvers],
+  typeDefs: [
+    departments.typeDefs,
+    customers.typeDefs,
+    attributes.typeDefs,
+    tax.typeDefs,
+    products.typeDefs
+  ],
+  resolvers: [
+    departments.resolvers,
+    customers.resolvers,
+    attributes.resolvers,
+    tax.resolvers,
+    products.resolvers
+  ],
   formatError: e => {
-    if (!errors[e.message]) return e;
+    if (!errors[e.message])
+      return {
+        status: 500,
+        code: 'UNK_01',
+        message: e.message
+      };
     const err = Object.assign({}, errors[e.message]);
 
     delete err.name;
@@ -49,7 +77,6 @@ const server = new ApolloServer({
   context: ({ req, res }) => ({
     req,
     res,
-    db,
     errors
   })
 });

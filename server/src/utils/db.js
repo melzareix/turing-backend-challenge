@@ -1,9 +1,6 @@
-import knex from 'knex';
-import bookshelf from 'bookshelf';
-
 require('dotenv').config();
 
-const config = {
+const knexConfig = {
   client: 'mysql2',
   connection: {
     host: process.env.MYSQL_HOST,
@@ -13,8 +10,4 @@ const config = {
   }
 };
 
-// bookshelf orm
-const orm = bookshelf(knex(config));
-orm.plugin('pagination');
-
-export default orm;
+export default knexConfig;
