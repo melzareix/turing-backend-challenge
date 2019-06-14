@@ -1030,7 +1030,7 @@ ajv-keywords@^3.0.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.4.0.tgz#4b831e7b531415a7cc518cd404e73f6193c6349d"
 
-ajv@^6.0.1, ajv@^6.5.0, ajv@^6.5.5:
+ajv@^6.0.1, ajv@^6.1.1, ajv@^6.5.0, ajv@^6.5.5:
   version "6.10.0"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.0.tgz#90d0d54439da587cd7e843bfb7045f50bd22bdf1"
   dependencies:
@@ -1498,7 +1498,7 @@ bignumber.js@7.2.1:
   version "7.2.1"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-7.2.1.tgz#80c048759d826800807c4bfd521e50edbba57a5f"
 
-bluebird@^3.4.3, bluebird@^3.5.5:
+bluebird@^3.4.3, bluebird@^3.5.3, bluebird@^3.5.5:
   version "3.5.5"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.5.5.tgz#a8d0afd73251effbbd5fe384a77d73003c17a71f"
 
@@ -3828,6 +3828,7 @@ kleur@^3.0.2:
 knex@^0.17.5:
   version "0.17.5"
   resolved "https://registry.yarnpkg.com/knex/-/knex-0.17.5.tgz#44d4e95585c2330944c311c66978dbb0c1a44a4d"
+  integrity sha512-2BUau9Mg7vE+Isl2MfRhw+XtusTdAj9K5dSzor4N1yxHMLCfvPLIEY7Gmyq4QIz51cLRBNoQETyygdCE9BOmxw==
   dependencies:
     "@babel/polyfill" "^7.4.4"
     "@types/bluebird" "^3.5.27"
@@ -4477,6 +4478,15 @@ object.pick@^1.2.0, object.pick@^1.3.0:
   resolved "https://registry.yarnpkg.com/object.pick/-/object.pick-1.3.0.tgz#87a10ac4c1694bd2e1cbf53591a66141fb5dd747"
   dependencies:
     isobject "^3.0.1"
+
+objection@^1.6.9:
+  version "1.6.9"
+  resolved "https://registry.yarnpkg.com/objection/-/objection-1.6.9.tgz#deb067e0ba938bce22a4a2691b93d9df68346748"
+  integrity sha512-4mp2f34Fn+gCOXO5e9YEWbcnAfvFPF3Rd2NAyQWU6CkZQObqm1mFDw8tYZySpkvibnDg6DPMiprUm82yGy6fgQ==
+  dependencies:
+    ajv "^6.1.1"
+    bluebird "^3.5.3"
+    lodash "^4.17.11"
 
 on-finished@~2.3.0:
   version "2.3.0"

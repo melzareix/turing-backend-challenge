@@ -3,17 +3,17 @@ import validateSchema from '../utils/yupValidator';
 import { authenticateFacebook } from '../utils/passport';
 
 import {
-  customerSignupSchema,
-  customerLoginSchema,
-  customerUpdateSchema,
   customerAddressUpdateSchema,
-  customerCreditCardUpdateSchema
+  customerCreditCardUpdateSchema,
+  customerLoginSchema,
+  customerSignupSchema,
+  customerUpdateSchema
 } from './schemas';
 
 const generateLoginResponse = customer => {
   const jwtToken = customer.generateToken();
   return {
-    customer: customer.attributes,
+    customer,
     accessToken: jwtToken.accessToken,
     expires_in: jwtToken.expiresIn
   };
@@ -25,8 +25,7 @@ const resolvers = {
       if (!req.user) {
         throw new Error(errors.unauthorized.name);
       }
-      const customer = await Customers.findWithId(req.user.id);
-      return customer.attributes;
+      return Customers.findWithId(req.user.customer_id);
     }
   },
   Mutation: {
@@ -115,7 +114,7 @@ const resolvers = {
         throw error;
       }
 
-      return updatedCustomer.attributes;
+      return updatedCustomer;
     },
     updateCustomerAddress: async (parent, { addressData }, { req, errors }) => {
       if (!req.user) {
@@ -123,11 +122,7 @@ const resolvers = {
       }
 
       await validateSchema(customerAddressUpdateSchema, addressData, errors);
-      const updatedCustomer = await Customers.updateCustomer(
-        addressData,
-        req.user
-      );
-      return updatedCustomer.attributes;
+      return Customers.updateCustomer(addressData, req.user);
     },
     updateCustomerCreditCard: async (
       parent,
@@ -143,11 +138,7 @@ const resolvers = {
         { creditCard },
         errors
       );
-      const updatedCustomer = await Customers.updateCustomer(
-        { credit_card: creditCard },
-        req.user
-      );
-      return updatedCustomer.attributes;
+      return Customers.updateCustomer({ credit_card: creditCard }, req.user);
     }
   }
 };

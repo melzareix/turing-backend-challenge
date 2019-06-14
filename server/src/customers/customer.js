@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import orm from '../utils/db';
+import { Model } from 'objection';
 
 require('dotenv').config();
 
@@ -28,17 +28,27 @@ export class JWT {
  * Customer Model.
  */
 
-export const CustomerModel = orm.Model.extend({
-  tableName: 'customer',
-  idAttribute: 'customer_id',
+export class CustomerModel extends Model {
+  static get tableName() {
+    return 'customer';
+  }
+
+  static get idColumn() {
+    return 'customer_id';
+  }
+
   generateToken() {
-    const name = this.get('name');
-    const id = this.get('customer_id');
-    const email = this.get('email');
+    const { name, email } = this;
+    const id = this.customer_id;
 
     return JWT.sign({ name, id, email });
   }
-});
+
+  async $beforeInsert(queryContext) {
+    await super.$beforeInsert(queryContext);
+    this.password = await bcrypt.hash(this.password, bcrypt.genSaltSync(8));
+  }
+}
 
 export class Customers {
   /**
@@ -46,12 +56,9 @@ export class Customers {
    */
 
   static async findOne(email) {
-    const result = await CustomerModel.query({
-      where: {
-        email
-      }
-    }).fetch();
-    return result;
+    return CustomerModel.query().findOne({
+      email
+    });
   }
 
   /**
@@ -59,12 +66,7 @@ export class Customers {
    */
 
   static async findFacebookUser(id) {
-    const result = await CustomerModel.query({
-      where: {
-        facebook_id: id
-      }
-    }).fetch();
-    return result;
+    return CustomerModel.query().findOne({ facebook_id: id });
   }
 
   /**
@@ -72,12 +74,7 @@ export class Customers {
    */
 
   static async findWithId(id) {
-    const result = await CustomerModel.query({
-      where: {
-        customer_id: id
-      }
-    }).fetch();
-    return result;
+    return CustomerModel.query().findById(id);
   }
 
   /**
@@ -85,10 +82,7 @@ export class Customers {
    */
 
   static async createCustomer(data) {
-    const newData = Object.assign({}, data);
-    newData.password = await bcrypt.hash(data.password, bcrypt.genSaltSync(8));
-    const customer = await new CustomerModel(newData).save();
-    return customer;
+    return CustomerModel.query().insert(data);
   }
 
   /**
@@ -96,22 +90,17 @@ export class Customers {
    */
   static async loginCustomer({ email, password }) {
     const result = await this.findOne(email);
-    if (
-      result != null &&
-      !bcrypt.compareSync(password, result.attributes.password)
-    ) {
+    if (result != null && !bcrypt.compareSync(password, result.password)) {
       return -1;
     }
     return result;
   }
 
   /**
-   * Update custoemr data.
+   * Update customer data.
    */
 
   static async updateCustomer(data, user) {
-    let customer = await this.findWithId(user.customer_id);
-    customer = await customer.save(data);
-    return customer;
+    return CustomerModel.query().patchAndFetchById(user.customer_id, data);
   }
 }

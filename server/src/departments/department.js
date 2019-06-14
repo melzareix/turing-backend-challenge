@@ -1,32 +1,27 @@
-import orm from '../utils/db';
+import { Model } from 'objection';
 
-export const DepartmentModel = orm.Model.extend({
-  tableName: 'department',
-  idAttribute: 'department_id'
-});
+export class DepartmentModel extends Model {
+  static get tableName() {
+    return 'department';
+  }
+
+  static get idColumn() {
+    return 'department_id';
+  }
+}
 
 export class Departments {
   /*
    * Return all departments.
    */
   static async findAll() {
-    const results = await DepartmentModel.fetchAll();
-    return results.serialize();
+    return DepartmentModel.query();
   }
 
   /**
    * Return department with id.
    */
   static async findOne(id) {
-    const result = await DepartmentModel.query(
-      'where',
-      'department_id',
-      '=',
-      id
-    ).fetch();
-    if (result != null) {
-      return result.serialize();
-    }
-    return result;
+    return DepartmentModel.query().findById(id);
   }
 }

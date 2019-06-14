@@ -1,10 +1,14 @@
 import faker from 'faker';
+import Knex from 'knex';
+import { Model } from 'objection';
+import knexConfig from '../utils/db';
 import { Customers } from './customer';
 
 const _customers = [];
 const _customersData = [];
 
 beforeAll(() => {
+  Model.knex(Knex(knexConfig));
   for (let i = 0; i < 3; i += 1) {
     _customers.push({
       email: faker.internet.email(),
@@ -28,7 +32,7 @@ test('Should create & add user to database.', async () => {
   await Customers.createCustomer(_customer);
 
   const newCustomer = await Customers.findOne(_customer.email);
-  const { name, email } = newCustomer.attributes;
+  const { name, email } = newCustomer;
 
   expect(name).toBe(_customer.name);
   expect(email).toBe(_customer.email);
@@ -40,12 +44,10 @@ test('Should update customer information.', async () => {
 
   const existingCustomer = await Customers.findOne(_customer.email);
 
-  let updatedCustomer = await Customers.updateCustomer(
+  const updatedCustomer = await Customers.updateCustomer(
     _customerData,
-    existingCustomer.attributes
+    existingCustomer
   );
-
-  updatedCustomer = updatedCustomer.serialize();
 
   expect(updatedCustomer.credit_card).toBe(_customerData.credit_card);
   expect(updatedCustomer.address_1).toBe(_customerData.address_1);
@@ -65,16 +67,16 @@ test('Should not create users with same email.', async () => {
 
 test('should login with the right credentials.', async () => {
   const _customer = _customers[0];
-  const customer = await Customers.loginCustomer(_customer);
+  const customer = (await Customers.loginCustomer(_customer)) || null;
 
   expect(customer).not.toBeNull();
   expect(customer).not.toBe(-1);
-  expect(customer.attributes.email).toBe(_customer.email);
+  expect(customer.email).toBe(_customer.email);
 });
 
 test('should not login with wrong email.', async () => {
   const _customer = _customers[1];
-  const customer = await Customers.loginCustomer(_customer);
+  const customer = (await Customers.loginCustomer(_customer)) || null;
 
   expect(customer).toBeNull();
 });
