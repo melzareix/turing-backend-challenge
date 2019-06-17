@@ -15,14 +15,14 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: yarn install
+      - run: cd server && yarn install
 
       - save_cache:
           paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+            - server/node_modules
+          key: v1-dependencies-{{ checksum "server/package.json" }}
 
       # run tests!
-      - run: yarn test
+      - run: cd server && yarn test
       - store_artifacts:
-          path: coverage
+          path: server/coverage
