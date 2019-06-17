@@ -4,6 +4,11 @@ import knexConfig from '../utils/db';
 import { Departments } from './department';
 
 let departments;
+const DB_DEFAULT_DEPARTMENTS = 3;
+
+/**
+ * Initialize database.
+ */
 
 beforeAll(() => {
   Model.knex(Knex(knexConfig));
@@ -11,7 +16,7 @@ beforeAll(() => {
 
 test('Should get all seed departments.', async () => {
   departments = await Departments.findAll();
-  expect(departments.length).toBe(3);
+  expect(departments.length).toBe(DB_DEFAULT_DEPARTMENTS);
 });
 
 test('Should get correct data for specific department.', async () => {

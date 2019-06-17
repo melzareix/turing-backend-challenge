@@ -2,6 +2,11 @@ import { Model } from 'objection';
 import { ProductModel } from '../products/product';
 import { DepartmentModel } from '../departments/department';
 
+/**
+ * ORM Model for DB Category Table.
+ */
+
+/* istanbul ignore next */
 export class CategoryModel extends Model {
   static get tableName() {
     return 'category';
@@ -13,6 +18,7 @@ export class CategoryModel extends Model {
 
   static get relationMappings() {
     return {
+      // get all products in a category
       products: {
         relation: Model.ManyToManyRelation,
         modelClass: ProductModel,
@@ -25,6 +31,7 @@ export class CategoryModel extends Model {
           to: 'product.product_id'
         }
       },
+      // get the department of the category
       department: {
         relation: Model.HasOneRelation,
         modelClass: DepartmentModel,
@@ -54,12 +61,18 @@ export class Category {
     return CategoryModel.query().findById(id);
   }
 
+  /**
+   * Get all categories for a specific product.
+   */
   static async getProductCategories(id) {
     const product = await ProductModel.query().findById(id);
     if (!product) return [];
     return product.$relatedQuery('categories');
   }
 
+  /**
+   * Get all categories for a specific department.
+   */
   static async getDepartmentCategories(id) {
     const department = await DepartmentModel.query().findById(id);
     if (!department) return [];

@@ -1,5 +1,8 @@
 import { Attributes } from './attribute';
 
+/**
+ * GraphQL Resolver functions.
+ */
 const resolvers = {
   Query: {
     attributes: async () => {

@@ -1,5 +1,9 @@
 import { Shipping } from './shipping';
 
+/**
+ * GraphQL Resolver functions.
+ */
+
 const resolvers = {
   Query: {
     shippingRegions: async () => {

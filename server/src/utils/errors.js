@@ -1,3 +1,7 @@
+/**
+ * Predefined Error Messages & Codes.
+ */
+
 export default {
   password_invalid: {
     name: 'password_invalid',

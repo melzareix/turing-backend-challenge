@@ -2,8 +2,12 @@ import stripe from 'stripe';
 
 require('dotenv').config();
 
+// create stripe client
 const client = stripe(process.env.STRIPE_SECRET_KEY);
 
+/**
+ * Stripe GraphQL Resolvers.
+ */
 const resolvers = {
   Mutation: {
     stripeCharge: async (_, { order }) => {

@@ -1,5 +1,8 @@
 import { gql } from 'apollo-server-express';
 
+/**
+ * GraphQL Schema for Attributes.
+ */
 export default gql`
   type Attribute {
     attribute_id: Int!

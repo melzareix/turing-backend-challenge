@@ -1,6 +1,10 @@
 import { Model } from 'objection';
 import { CategoryModel } from '../categories/category';
 
+/**
+ * ORM Model for DB Departments Table.
+ */
+/* istanbul ignore next */
 export class DepartmentModel extends Model {
   static get tableName() {
     return 'department';
@@ -12,6 +16,7 @@ export class DepartmentModel extends Model {
 
   static get relationMappings() {
     return {
+      // get categories in the department
       categories: {
         relation: Model.HasManyRelation,
         modelClass: CategoryModel,

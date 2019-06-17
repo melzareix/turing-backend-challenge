@@ -1,6 +1,10 @@
 require('dotenv').config();
 
-const knexConfig = {
+/**
+ * Knex MySQL Database Configuration.
+ */
+
+export default {
   client: 'mysql2',
   connection: {
     host: process.env.MYSQL_HOST,
@@ -9,5 +13,3 @@ const knexConfig = {
     database: process.env.MYSQL_DB
   }
 };
-
-export default knexConfig;

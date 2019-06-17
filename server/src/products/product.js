@@ -2,6 +2,11 @@ import { Model } from 'objection';
 import { CategoryModel } from '../categories/category';
 import { CustomerModel } from '../customers/customer';
 
+/**
+ * ORM Model for DB Products Table.
+ */
+
+/* istanbul ignore next */
 export class ProductModel extends Model {
   static get tableName() {
     return 'product';
@@ -13,6 +18,7 @@ export class ProductModel extends Model {
 
   static get relationMappings() {
     return {
+      // get categories of the product
       categories: {
         relation: Model.ManyToManyRelation,
         modelClass: CategoryModel,
@@ -29,6 +35,11 @@ export class ProductModel extends Model {
   }
 }
 
+/**
+ * ORM Model for DB Review Table.
+ */
+
+/* istanbul ignore next */
 export class ReviewModel extends Model {
   static get tableName() {
     return 'review';
@@ -40,6 +51,7 @@ export class ReviewModel extends Model {
 
   static get relationMappings() {
     return {
+      // get customer that posted the review
       customer: {
         relation: Model.HasOneRelation,
         modelClass: CustomerModel,
@@ -49,7 +61,14 @@ export class ReviewModel extends Model {
   }
 }
 
+/**
+ * Products Repository.
+ */
+
 export class Products {
+  /**
+   * Helper method to truncate description.
+   */
   static truncate(products, limit) {
     return products.results.map(row => {
       if (row.description.length > limit) {
@@ -73,6 +92,16 @@ export class Products {
     return ProductModel.query().findById(id);
   }
 
+  /**
+   * Search for products.
+   * @param query keyword(s) to search with.
+   * @param allWords
+   * @param page
+   * @param limit
+   * @param descriptionLimit
+   * @returns {Promise<{count: *, products: *}>}
+   */
+
   static async searchProducts(
     query,
     allWords = true,
@@ -95,6 +124,11 @@ export class Products {
     };
   }
 
+  /**
+   * Get all product departments and categories.
+   * @param productId
+   */
+
   static async getProductLocation(productId) {
     const locations = await Model.knex().raw(
       'call catalog_get_product_locations(?)',
@@ -103,9 +137,17 @@ export class Products {
     return locations[0][0];
   }
 
+  /**
+   * Get all products in a specific category.
+   */
+
   static async getProductsInCategory(categoryId, pagination) {
     const category = await CategoryModel.query().findById(categoryId);
-    if (!category) return null;
+    if (!category)
+      return {
+        count: 0,
+        products: []
+      };
     const results = await category
       .$relatedQuery('products')
       .page(pagination.page, pagination.limit);
@@ -114,6 +156,10 @@ export class Products {
       products: Products.truncate(results, pagination.description_length)
     };
   }
+
+  /**
+   * Get all products in a specific department.
+   */
 
   static async getProductsInDepartment(depId, pagination) {
     const results = await CategoryModel.query()
@@ -130,6 +176,10 @@ export class Products {
     };
   }
 
+  /**
+   * Get all reviews for a specific product.
+   */
+
   static async getProductReviews(productId) {
     return ReviewModel.query()
       .where({
@@ -138,6 +188,10 @@ export class Products {
       .innerJoinRelation('customer')
       .select('*');
   }
+
+  /**
+   * Add a review to a product.
+   */
 
   static async addReview({ customerId, productId, review, rating }) {
     return ReviewModel.query().insert({

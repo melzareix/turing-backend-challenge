@@ -1,5 +1,9 @@
 import { Category } from './category';
 
+/**
+ * GraphQL Resolver functions.
+ */
+
 const resolvers = {
   Query: {
     categories: async (_, { pagination }) => {

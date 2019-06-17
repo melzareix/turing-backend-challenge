@@ -1,5 +1,10 @@
 import { Model } from 'objection';
 
+/**
+ * ORM Model for DB Attributes Table.
+ */
+
+/* istanbul ignore next */
 export class AttributesModel extends Model {
   static get tableName() {
     return 'attribute';
@@ -10,6 +15,11 @@ export class AttributesModel extends Model {
   }
 }
 
+/**
+ * ORM Model for DB AttributesValues Table.
+ */
+
+/* istanbul ignore next */
 export class AttributesValues extends Model {
   static get tableName() {
     return 'attribute_value';
@@ -20,6 +30,9 @@ export class AttributesValues extends Model {
   }
 }
 
+/**
+ * Attributes Repository.
+ */
 export class Attributes {
   /*
    * Return all attributes.

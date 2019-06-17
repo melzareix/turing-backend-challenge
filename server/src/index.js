@@ -14,9 +14,10 @@ import products from './products';
 import categories from './categories';
 import shipping from './shipping';
 import stripe from './stripe';
+import orders from './orders';
 import cart from './cart';
 
-import errors from './errors';
+import errors from './utils/errors';
 import knexConfig from './utils/db';
 
 const logger = pino({
@@ -67,7 +68,8 @@ const server = new ApolloServer({
     categories.typeDefs,
     shipping.typeDefs,
     stripe.typeDefs,
-    cart.typeDefs
+    cart.typeDefs,
+    orders.typeDefs
   ],
   resolvers: [
     departments.resolvers,
@@ -78,7 +80,8 @@ const server = new ApolloServer({
     categories.resolvers,
     shipping.resolvers,
     stripe.resolvers,
-    cart.resolvers
+    cart.resolvers,
+    orders.resolvers
   ],
   formatError: e => {
     if (!errors[e.message])

@@ -1,5 +1,8 @@
 import { gql } from 'apollo-server-express';
 
+/**
+ * GraphQL Schema.
+ */
 export default gql`
   enum CategoryOrder {
     category_id
