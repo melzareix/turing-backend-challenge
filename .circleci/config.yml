@@ -37,8 +37,7 @@ jobs:
       - run:
           name: Install MySQL CLI; Import seed;
           command: |
-            sudo sudo apt-get update && sudo apt-get install mysql-client &&
-            mysql -h 127.0.0.1 -u user -proot tshirtshop < database/tshirtshop.sql
+            sudo apt-get install mysql-client && mysql -h 127.0.0.1 -u user -proot tshirtshop < database/tshirtshop.sql
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "server/package.json" }}
