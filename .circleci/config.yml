@@ -4,11 +4,40 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/node:chakracore-10.0
+        environment:
+          MYSQL_HOST: localhost
+          MYSQL_USER: root
+          MYSQL_PASS: root
+          MYSQL_DB: tshirtshop
+          MYSQL_PORT: 3306
+          JWT_KEY: samplejwtkey
+
+      - image: circleci/mysql:5.7
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: tshirtshop
+        MYSQL_USER: root
+        MYSQL_PASSWORD: root
 
     working_directory: ~/repo
 
     steps:
       - checkout
+      - run:
+          # Our primary container isn't MYSQL so run a sleep command until it's ready.
+          name: Waiting for MySQL to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z 127.0.0.1 3306 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for MySQL && exit 1
+      - run:
+          name: Install MySQL CLI; Import seed;
+          command: |
+            sudo apt-get install mysql-client
+            mysql -h 127.0.0.1 -u user -proot tshirtshop < database/tshirtshop.sql
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "server/package.json" }}
@@ -21,6 +50,7 @@ jobs:
           paths:
             - server/node_modules
           key: v1-dependencies-{{ checksum "server/package.json" }}
+
 
       # run tests!
       - run: cd server && yarn test
