@@ -13,10 +13,11 @@ jobs:
           JWT_KEY: samplejwtkey
 
       - image: circleci/mysql:5.7
-        MYSQL_ROOT_PASSWORD: root
-        MYSQL_DATABASE: tshirtshop
-        MYSQL_USER: root
-        MYSQL_PASSWORD: root
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: tshirtshop
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
 
     working_directory: ~/repo
 
@@ -36,7 +37,7 @@ jobs:
       - run:
           name: Install MySQL CLI; Import seed;
           command: |
-            sudo sudo apt-get update && sudo apt-get install mysql-client
+            sudo sudo apt-get update && sudo apt-get install mysql-client &&
             mysql -h 127.0.0.1 -u user -proot tshirtshop < database/tshirtshop.sql
       - restore_cache:
           keys:
