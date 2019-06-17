@@ -1,5 +1,10 @@
 import { Model } from 'objection';
 
+/**
+ * ORM Model for DB Tax Table.
+ */
+
+/* istanbul ignore next */
 export class TaxModel extends Model {
   static get tableName() {
     return 'tax';
@@ -10,6 +15,9 @@ export class TaxModel extends Model {
   }
 }
 
+/**
+ * Tax Repository.
+ */
 export class Tax {
   /**
    * Get All Taxes.

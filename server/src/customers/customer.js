@@ -8,6 +8,7 @@ require('dotenv').config();
  * JWT Signing & Validation.
  */
 
+/* istanbul ignore next */
 export class JWT {
   static sign(data) {
     const accessToken = jwt.sign(data, process.env.JWT_KEY, {
@@ -28,6 +29,7 @@ export class JWT {
  * Customer Model.
  */
 
+/* istanbul ignore next */
 export class CustomerModel extends Model {
   static get tableName() {
     return 'customer';

@@ -2,6 +2,10 @@ import { Customers } from './customer';
 import validateSchema from '../utils/yupValidator';
 import { authenticateFacebook } from '../utils/passport';
 
+/**
+ * GraphQL Resolver functions.
+ */
+
 import {
   customerAddressUpdateSchema,
   customerCreditCardUpdateSchema,

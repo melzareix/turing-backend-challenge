@@ -1,5 +1,8 @@
 import { Tax } from './tax';
 
+/**
+ * GraphQL Resolver functions.
+ */
 const resolvers = {
   Query: {
     taxes: async () => {

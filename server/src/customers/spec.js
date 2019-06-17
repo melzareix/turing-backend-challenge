@@ -2,7 +2,7 @@ import faker from 'faker';
 import Knex from 'knex';
 import { Model } from 'objection';
 import knexConfig from '../utils/db';
-import { Customers } from './customer';
+import { Customers, CustomerModel } from './customer';
 
 const _customers = [];
 const _customersData = [];
@@ -11,9 +11,11 @@ beforeAll(() => {
   Model.knex(Knex(knexConfig));
   for (let i = 0; i < 3; i += 1) {
     _customers.push({
+      customer_id: faker.random.number({ min: 1000, max: 2000 }),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      name: faker.name.firstName()
+      name: faker.name.firstName(),
+      facebook_id: faker.random.alphaNumeric(14) // fake facebook id
     });
     _customersData.push({
       credit_card: '5555555555554444',
@@ -27,7 +29,7 @@ beforeAll(() => {
   }
 });
 
-test('Should create & add user to database.', async () => {
+test('should create a new customer.', async () => {
   const _customer = _customers[0];
   await Customers.createCustomer(_customer);
 
@@ -38,7 +40,28 @@ test('Should create & add user to database.', async () => {
   expect(email).toBe(_customer.email);
 });
 
-test('Should update customer information.', async () => {
+test('should get the correct customer information from id', async () => {
+  const _customer = _customers[0];
+  const dbCustomer = await Customers.findWithId(_customer.customer_id);
+  const { name, email } = dbCustomer;
+
+  expect(name).toBe(_customer.name);
+  expect(email).toBe(_customer.email);
+});
+
+test('should get the correct customer information from facebook id', async () => {
+  const _customer = _customers[0];
+  const dbCustomer = await Customers.findFacebookUser(_customer.facebook_id);
+
+  // eslint-disable-next-line camelcase
+  const { name, email, customer_id } = dbCustomer;
+
+  expect(customer_id).toBe(_customer.customer_id);
+  expect(name).toBe(_customer.name);
+  expect(email).toBe(_customer.email);
+});
+
+test('should update customer information.', async () => {
   const _customer = _customers[0];
   const _customerData = _customersData[0];
 
@@ -60,7 +83,7 @@ test('Should update customer information.', async () => {
   expect(updatedCustomer.postal_code).toBe(_customerData.postal_code);
 });
 
-test('Should not create users with same email.', async () => {
+test('should not create customers with same email.', async () => {
   const _customer = _customers[0];
   await expect(Customers.createCustomer(_customer)).rejects.toThrow();
 });
@@ -74,14 +97,14 @@ test('should login with the right credentials.', async () => {
   expect(customer.email).toBe(_customer.email);
 });
 
-test('should not login with wrong email.', async () => {
+test('should fail to login with wrong email.', async () => {
   const _customer = _customers[1];
   const customer = (await Customers.loginCustomer(_customer)) || null;
 
   expect(customer).toBeNull();
 });
 
-test('should not login with wrong password.', async () => {
+test('should fail to login with wrong password.', async () => {
   const _customer = _customers[0];
   const customer = await Customers.loginCustomer({
     email: _customer.email,
@@ -89,4 +112,10 @@ test('should not login with wrong password.', async () => {
   });
 
   expect(customer).toBe(-1);
+});
+
+afterAll(async () => {
+  _customers.forEach(async c => {
+    await CustomerModel.query().deleteById(c.customer_id);
+  });
 });

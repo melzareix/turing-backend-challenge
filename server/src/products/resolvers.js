@@ -1,5 +1,9 @@
 import { Products } from './product';
 
+/**
+ * GraphQL Resolver functions.
+ */
+
 const resolvers = {
   Query: {
     products: async (parent, { pagination }) => {

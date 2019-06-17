@@ -1,6 +1,6 @@
 import resolvers from './resolvers';
 import typeDefs from './typeDef';
-import errors from '../errors';
+import errors from '../utils/errors';
 import { Customers } from './customer';
 
 export default {

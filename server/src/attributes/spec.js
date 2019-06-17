@@ -5,23 +5,39 @@ import { Attributes } from './attribute';
 
 let attributes;
 
+const DB_DEFAULT_ATTRIBUTES = 2;
+
+/**
+ * Initialize database.
+ */
+
 beforeAll(() => {
   Model.knex(Knex(knexConfig));
 });
 
-test('Should get all attributes.', async () => {
+test('should get all attributes.', async () => {
   attributes = await Attributes.findAll();
-  expect(attributes.length).toBe(2);
+  expect(attributes.length).toBe(DB_DEFAULT_ATTRIBUTES);
 });
 
-test('Should get correct data for specific attribute.', async () => {
+test('should get the correct attribute data.', async () => {
   const attribute =
     (await Attributes.findOne(attributes[0].attribute_id)) || null;
   expect(attribute).not.toBeNull();
   expect(attribute).toEqual(attributes[0]);
 });
 
-test('Should return null for wrong attribute.', async () => {
-  const attribute = (await Attributes.findOne(attributes.length + 2)) || null;
+test('should return null for incorrect attribute id.', async () => {
+  const attribute = (await Attributes.findOne(attributes.length + 1)) || null;
   expect(attribute).toBeNull();
+});
+
+test('should get all values for the attribute.', async () => {
+  const values = await Attributes.getAttributeValues(1);
+  expect(values.length).toBe(5);
+});
+
+test('should get all attributes for a specific product.', async () => {
+  const values = await Attributes.getProductAttributes(1);
+  expect(values.length).toBe(14);
 });

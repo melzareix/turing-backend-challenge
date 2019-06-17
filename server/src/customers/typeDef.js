@@ -1,5 +1,9 @@
 import { gql } from 'apollo-server-express';
 
+/**
+ * GraphQL Schema.
+ */
+
 export default gql`
   type Customer {
     customer_id: ID!

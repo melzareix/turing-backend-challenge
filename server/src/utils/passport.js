@@ -42,7 +42,7 @@ export const jwtStrategy = new Strategy(
 );
 
 /*
-  Facebook Auth.
+  Facebook Authentication.
 */
 
 export const facebookStrategy = new FacebookTokenStrategy(

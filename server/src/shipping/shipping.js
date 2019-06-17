@@ -1,5 +1,10 @@
 import { Model } from 'objection';
 
+/**
+ * ORM Model for DB Shipping Region Table.
+ */
+
+/* istanbul ignore next */
 export class ShippingRegionModel extends Model {
   static get tableName() {
     return 'shipping_region';
@@ -10,6 +15,11 @@ export class ShippingRegionModel extends Model {
   }
 }
 
+/**
+ * ORM Model for DB Shipping Table.
+ */
+
+/* istanbul ignore next */
 export class ShippingModel extends Model {
   static get tableName() {
     return 'shipping';
@@ -21,6 +31,7 @@ export class ShippingModel extends Model {
 
   static get relationMappings() {
     return {
+      // get all regions for the shipping
       regions: {
         relation: Model.HasOneRelation,
         modelClass: ShippingRegionModel,

@@ -1,5 +1,8 @@
 import { Departments } from './department';
 
+/**
+ * GraphQL Resolver functions.
+ */
 const resolvers = {
   Query: {
     departments: async () => {
