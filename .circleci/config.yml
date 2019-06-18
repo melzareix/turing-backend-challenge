@@ -12,7 +12,7 @@ jobs:
           MYSQL_PORT: 3306
           JWT_KEY: samplejwtkey
 
-      - image: mysql:5.7
+      - image: circleci/mysql:5.7
         environment:
           MYSQL_ROOT_PASSWORD: user
           MYSQL_DATABASE: tshirtshop
