@@ -11,7 +11,7 @@
 
 ### 1. Introduction
 This project is a backend implementation of ShopMate an ecommerce platform. It's part of turing.ly challenge for backend developers.
-The technologies used are Nodejs & GraphQL for the API and MySQL for the database.
+The technologies used are Nodejs & GraphQL for the API and MySQL for the database. I spent around **35 hours** working on this challenge.
 
 ### 2. Architecture
 The backend is split modularly into modules by according to features. This seperation allows the app to be seperated into microservices architecture with ease when needed. 
