@@ -6,6 +6,8 @@ import { Model } from 'objection';
 import Knex from 'knex';
 import { jwtStrategy, facebookStrategy } from './utils/passport';
 
+import { scheduleCartsDeletion } from './utils/jobs';
+
 import departments from './departments';
 import customers from './customers';
 import attributes from './attributes';
@@ -28,6 +30,9 @@ require('dotenv').config();
 
 // Database
 Model.knex(Knex(knexConfig));
+
+// Clear carts job everyday at 5 A.M
+scheduleCartsDeletion();
 
 // Express
 const app = express();
@@ -107,3 +112,4 @@ server.applyMiddleware({ app });
 app.listen({ port: 4000 }, () => {
   logger.info(`Server started at http://localhost:4000${server.graphqlPath}`);
 });
+
