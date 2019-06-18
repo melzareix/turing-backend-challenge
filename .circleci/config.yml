@@ -27,10 +27,8 @@ jobs:
           name: Install MySQL CLI; Import seed;
           command: |
             apt-get update
-            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-            python get-pip.py
-            pip install -U mycli
-            mycli -h 127.0.0.1 -u user -puser tshirtshop < database/tshirtshop.sql
+            apt-get install mysql-client
+            mysql -h 127.0.0.1 -u user -puser tshirtshop < database/tshirtshop.sql
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "server/package.json" }}
