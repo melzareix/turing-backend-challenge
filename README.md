@@ -1,5 +1,14 @@
 # Turing.ly Shopmate
 
+## Table Of Contents
+- [1. Introduction](#1-introduction)
+- [2. Architecture](#2-architecture)
+- [3. API Documentation](#3-api-documentation)
+- [4. Errors](#4-errors)
+- [5. Installing](#5-installing)
+- [6. Testing](#6-testing)
+- [7. Advanced Requirements](#7-advanced-requirements)
+
 ### 1. Introduction
 This project is a backend implementation of ShopMate an ecommerce platform. It's part of turing.ly challenge for backend developers.
 The technologies used are Nodejs & GraphQL for the API and MySQL for the database.
