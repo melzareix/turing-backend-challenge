@@ -8,6 +8,7 @@
 - [5. Installing](#5-installing)
 - [6. Testing](#6-testing)
 - [7. Advanced Requirements](#7-advanced-requirements)
+- [8. Deployment](#8-deployment)
 
 ### 1. Introduction
 This project is a backend implementation of ShopMate an ecommerce platform. It's part of turing.ly challenge for backend developers.
@@ -53,3 +54,5 @@ The API has 100% test coverage using Jest. To run the tests `yarn test`.
 
 To handle this case it would be best if we use and base our servers in the United States so the latency to the users is smaller. We can also use a CDN for static assets that are US based.
 
+### 8. Deployment
+The API is currently deployed at [http://34.68.122.220:4000/graphql](http://34.68.122.220:4000/graphql). It's deployed using docker on GCP.
