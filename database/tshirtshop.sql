@@ -84,7 +84,7 @@ CREATE TABLE `orders` (
   `total_amount` DECIMAL(10,2) NOT NULL  DEFAULT '0.00',
   `created_on`   DATETIME      NOT NULL,
   `shipped_on`   DATETIME,
-  `status`       INT           NOT NULL  DEFAULT '0',``
+  `status`       INT           NOT NULL  DEFAULT '0',
   `comments`     VARCHAR(255),
   `customer_id`  INT,
   `auth_code`    VARCHAR(50),

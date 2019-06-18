@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  backend:
+    build:
+      context: .
+    ports:
+      - 4000:4000
+    env_file:
+      - ./server/.env
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: user
+      MYSQL_DATABASE: tshirtshop
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - 3306:3306
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
