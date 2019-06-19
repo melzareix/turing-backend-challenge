@@ -1,6 +1,7 @@
 # Turing.ly Shopmate
 
 [![CircleCI](https://circleci.com/gh/melzareix/turing-challenge.svg?style=svg&circle-token=c5c7424cf2868f2d25e3ff67a968559cf9fbbd5b)](https://circleci.com/gh/melzareix/turing-challenge)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/73e09ed5afeb40a8b90e610ba2391f1a)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=melzareix/turing-challenge&amp;utm_campaign=Badge_Grade)
 
 ## Table Of Contents
 - [1. Introduction](#1-introduction)

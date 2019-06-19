@@ -6,15 +6,15 @@ RUN mkdir -p /usr/src/app
 
 WORKDIR /tmp
 
-ADD ./server/package.json .
-ADD ./server/yarn.lock .
+COPY ./server/package.json .
+COPY ./server/yarn.lock .
 
 RUN yarn
 
-RUN cd /usr/src/app && ln -s /tmp/node_modules
-ADD /server /usr/src/app/
-
 WORKDIR /usr/src/app/
+
+RUN ln -s /tmp/node_modules .
+COPY /server .
 
 CMD ["yarn", "start"]
 EXPOSE 4000
