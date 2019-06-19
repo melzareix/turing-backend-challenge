@@ -49,7 +49,6 @@ test('should save item for later.', async () => {
   expect(savedItems.length).toBe(1);
 });
 
-
 test('should delete item from cart.', async () => {
   cartItems = await Cart.deleteItem(cartItems[0].item_id);
   expect(cartItems.length).toBe(0);
