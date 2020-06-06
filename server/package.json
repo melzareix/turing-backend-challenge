@@ -15,7 +15,7 @@
   "dependencies": {
     "@babel/runtime": "^7.4.5",
     "@sendgrid/mail": "^6.4.0",
-    "apollo-server-express": "^2.6.2",
+    "apollo-server-express": "^2.14.2",
     "apollo-server-testing": "^2.6.3",
     "bcryptjs": "^2.4.3",
     "bookshelf": "^0.14.2",
